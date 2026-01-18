@@ -6,12 +6,50 @@
 </head>
 
 <body>
-<h2>Add WhatsApp Contact</h2>
-<form method="POST" action="save.php">
-  <input type="text" name="name" placeholder="Name" required>
-  <input type="text" name="phone" placeholder="WhatsApp Number" required>
-  <input type="text" name="group" placeholder="Group">
-  <button type="submit">Save Contact</button>
-</form>
+  <h2>Add WhatsApp Contact</h2>
+
+  <!-- Form -->
+  <form id="contactForm">
+    <input type="text" id="name" placeholder="Name" required>
+    <input type="text" id="phone" placeholder="WhatsApp Number" required>
+    <input type="text" id="group" placeholder="Group">
+    <button type="submit">Save Contact</button>
+  </form>
+
+  <h3>Saved Contacts:</h3>
+  <ul id="contactList"></ul>
+
+  <!-- JavaScript to handle saving contacts in LocalStorage -->
+  <script>
+    const form = document.getElementById('contactForm');
+    const contactList = document.getElementById('contactList');
+
+    // Load existing contacts from LocalStorage
+    let contacts = JSON.parse(localStorage.getItem('contacts') || '[]');
+    contacts.forEach(c => addContactToList(c));
+
+    // Handle form submission
+    form.addEventListener('submit', function(e) {
+      e.preventDefault(); // Prevent form from reloading page
+
+      const name = document.getElementById('name').value;
+      const phone = document.getElementById('phone').value;
+      const group = document.getElementById('group').value;
+
+      const contact = { name, phone, group };
+      contacts.push(contact);
+      localStorage.setItem('contacts', JSON.stringify(contacts));
+
+      addContactToList(contact);
+      form.reset();
+    });
+
+    // Function to display contact in the list
+    function addContactToList(contact) {
+      const li = document.createElement('li');
+      li.textContent = `${contact.name} - ${contact.phone}` + (contact.group ? ` (${contact.group})` : '');
+      contactList.appendChild(li);
+    }
+  </script>
 </body>
-</html>
+  </html>
