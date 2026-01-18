@@ -2,7 +2,7 @@
 $conn = mysqli_connect("localhost","root","","manyusitech_contacts");
 $result = mysqli_query($conn,"SELECT * FROM whatsapp_contacts");
 echo "<h2>Contacts List</h2>";
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="style.css">
 echo "<table border='1'><tr><th>Name</th><th>Phone</th><th>Group</th><th>WhatsApp Link</th></tr>";
 while($row = mysqli_fetch_assoc($result)){
     echo "<tr>
@@ -13,4 +13,5 @@ while($row = mysqli_fetch_assoc($result)){
     </tr>";
 }
 echo "</table>";
+
 ?>
