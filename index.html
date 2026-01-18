@@ -1,36 +1,44 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>WhatsApp Contacts</title>
+  <meta charset="UTF-8">
+  <title>Manyusitech WhatsApp Contacts</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
-  <h2>Add WhatsApp Contact</h2>
+  <div class="container">
+    <h1>Manyusitech WhatsApp Contacts</h1>
 
-  <!-- Form -->
-  <form id="contactForm">
-    <input type="text" id="name" placeholder="Name" required>
-    <input type="text" id="phone" placeholder="WhatsApp Number" required>
-    <input type="text" id="group" placeholder="Group">
-    <button type="submit">Save Contact</button>
-  </form>
+    <!-- Form -->
+    <form id="contactForm">
+      <input type="text" id="name" placeholder="Name" required>
+      <input type="text" id="phone" placeholder="WhatsApp Number" required>
+      <input type="text" id="group" placeholder="Group (Optional)">
+      <button type="submit">Save Contact</button>
+    </form>
 
-  <h3>Saved Contacts:</h3>
-  <ul id="contactList"></ul>
+    <h2>Saved Contacts:</h2>
+    <ul id="contactList"></ul>
 
-  <!-- JavaScript to handle saving contacts in LocalStorage -->
+    <h2>QR Code Link</h2>
+    <div id="qrcode"></div>
+  </div>
+
+  <!-- QRCode library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
   <script>
     const form = document.getElementById('contactForm');
     const contactList = document.getElementById('contactList');
+    const qrContainer = document.getElementById('qrcode');
 
-    // Load existing contacts from LocalStorage
+    // Load contacts from LocalStorage
     let contacts = JSON.parse(localStorage.getItem('contacts') || '[]');
     contacts.forEach(c => addContactToList(c));
 
-    // Handle form submission
+    // Form submit
     form.addEventListener('submit', function(e) {
-      e.preventDefault(); // Prevent form from reloading page
+      e.preventDefault();
 
       const name = document.getElementById('name').value;
       const phone = document.getElementById('phone').value;
@@ -42,14 +50,26 @@
 
       addContactToList(contact);
       form.reset();
+
+      // Update QR code with WhatsApp link of latest contact
+      qrContainer.innerHTML = "";
+      new QRCode(qrContainer, `https://wa.me/${phone}`);
     });
 
-    // Function to display contact in the list
     function addContactToList(contact) {
       const li = document.createElement('li');
-      li.textContent = `${contact.name} - ${contact.phone}` + (contact.group ? ` (${contact.group})` : '');
+
+      // Create clickable WhatsApp link
+      const waLink = document.createElement('a');
+      waLink.href = `https://wa.me/${contact.phone}`;
+      waLink.target = "_blank";
+      waLink.textContent = contact.phone;
+
+      li.textContent = `${contact.name}` + (contact.group ? ` (${contact.group})` : '') + " - ";
+      li.appendChild(waLink);
+
       contactList.appendChild(li);
     }
   </script>
 </body>
-  </html>
+</html>
